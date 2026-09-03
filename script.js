@@ -174,3 +174,28 @@ form.addEventListener("submit", function (event) {
 
     form.reset();
 });
+studentContainer.addEventListener("click", function (event) {
+    if (!event.target.matches("button")) {
+        return;
+    }
+
+    const studentCard = event.target.closest(".student-card");
+
+    if (!studentCard) {
+        return;
+    }
+
+    const studentId = Number(studentCard.dataset.id);
+
+    const studentIndex = students.findIndex(function (student) {
+        return student.id === studentId;
+    });
+
+    if (studentIndex !== -1) {
+        students.splice(studentIndex, 1);
+    }
+
+    studentCard.remove();
+
+    studentCount.textContent = "Total Students: " + students.length;
+});
