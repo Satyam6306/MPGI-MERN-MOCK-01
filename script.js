@@ -1,4 +1,8 @@
 const form = document.getElementById("studentForm");
+const studentContainer = document.getElementById("studentContainer");
+const studentCount = document.getElementById("studentCount");
+
+const students = [];
 
 form.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -71,8 +75,10 @@ form.addEventListener("submit", function (event) {
     }
 
     if (!gender) {
-        const genderGroup = document.querySelector('input[name="gender"]').parentElement;
-        showError(genderGroup, "Please select gender");
+        showError(
+            document.querySelector('input[name="gender"]'),
+            "Please select gender"
+        );
     }
 
     if (course === "") {
@@ -80,8 +86,10 @@ form.addEventListener("submit", function (event) {
     }
 
     if (skills.length === 0) {
-        const skillsGroup = document.querySelector('input[name="skills"]').parentElement;
-        showError(skillsGroup, "Please select at least one skill");
+        showError(
+            document.querySelector('input[name="skills"]'),
+            "Please select at least one skill"
+        );
     }
 
     if (about === "") {
@@ -92,7 +100,77 @@ form.addEventListener("submit", function (event) {
         showError(document.getElementById("photo"), "Profile photo is required");
     }
 
-    if (isValid) {
-        alert("Form submitted successfully");
+    if (!isValid) {
+        return;
     }
+
+    const student = {
+        id: Date.now(),
+        name: name,
+        email: email,
+        phone: phone,
+        dob: dob,
+        gender: gender.value,
+        course: course,
+        skills: Array.from(skills).map(function (skill) {
+            return skill.value;
+        }),
+        about: about,
+        photo: URL.createObjectURL(photo)
+    };
+
+    students.push(student);
+
+    const card = document.createElement("div");
+    card.className = "student-card";
+    card.dataset.id = student.id;
+
+    const image = document.createElement("img");
+    image.src = student.photo;
+    image.alt = student.name;
+
+    const studentName = document.createElement("h3");
+    studentName.textContent = student.name;
+
+    const emailElement = document.createElement("p");
+    emailElement.textContent = "Email: " + student.email;
+
+    const phoneElement = document.createElement("p");
+    phoneElement.textContent = "Phone: " + student.phone;
+
+    const dobElement = document.createElement("p");
+    dobElement.textContent = "DOB: " + student.dob;
+
+    const genderElement = document.createElement("p");
+    genderElement.textContent = "Gender: " + student.gender;
+
+    const courseElement = document.createElement("p");
+    courseElement.textContent = "Course: " + student.course;
+
+    const skillsElement = document.createElement("p");
+    skillsElement.textContent = "Skills: " + student.skills.join(", ");
+
+    const aboutElement = document.createElement("p");
+    aboutElement.textContent = "About: " + student.about;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.textContent = "Delete";
+
+    card.appendChild(image);
+    card.appendChild(studentName);
+    card.appendChild(emailElement);
+    card.appendChild(phoneElement);
+    card.appendChild(dobElement);
+    card.appendChild(genderElement);
+    card.appendChild(courseElement);
+    card.appendChild(skillsElement);
+    card.appendChild(aboutElement);
+    card.appendChild(deleteButton);
+
+    studentContainer.appendChild(card);
+
+    studentCount.textContent = "Total Students: " + students.length;
+
+    form.reset();
 });
